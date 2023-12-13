@@ -18,6 +18,25 @@ let Capturactx = Captura.getContext('2d')
 Captura.width = 1450;
 Captura.height = 650;
 
+//*************************Socket block */
+const socket = io();
+
+socket.on('Sequence_start',function(infoplc){//pg migrated
+	
+	if (infoplc!= 0) {
+        cadenadedatos = infoplc.toString()
+
+        Sequence()//Activa bandera para continuar
+
+        console.log("Start test sequence");
+       // console.log(typeof(data))
+        //console.log(infoplc)
+       //console.log(pn)
+        }
+        else{	
+        console.log("Algo salio mal en el backend");
+        }});
+    
 /************************************************ llamada de las funciones de forma asincrona */
 async function Sequence(){
     
@@ -25,8 +44,15 @@ async function Sequence(){
     await captureimage() 
     await predict()
   //  await resultado()
-  //  setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
+    setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
 
+}
+
+//****************************************** Backend call functions
+
+function  plcelevado(p){
+	const socket = io();		
+	socket.emit('plcelevado',p);		
 }
 function resultado(){
     return new Promise(async resolve =>{ 
@@ -138,7 +164,7 @@ let criterio2 = 0.30
 //esta funcion es para verificar el corto de l primer punto
 async function highlightResults(predictions) {
 
-    for (let n = 0; n < predictions[0].length; n++) {
+    for (let n = 0; n < predictions[0].length && statusfinal == 1; n++) {
         // Check scores
         if (predictions[1][n] > criterio) {
            console.log("fallé: " + predictions[1][n])

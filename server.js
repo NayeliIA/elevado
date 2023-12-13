@@ -12,45 +12,90 @@ const cert = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/recortador/encrypti
 const httpsOptions = { key: key, cert: cert };*/
 
 const server = app.listen(8181, function () {
-    console.log('Server ready...');
+	console.log('Server ready...');
 
 });
 
-var io = require('socket.io')(server);
+//*----- TCP/IP PLC 
 
-io.on('connection', (socket)  => {
+var io = require('socket.io')(server); //Bind socket.io to our express server.
 
-//conexion para guardar imagenes
-socket.on('picsaving', async function (datauri,contenido,sample){ // Funcion de ejemplo borrar no importante
-	console.log("recibe",contenido);
-    await savingpic(datauri,contenido,sample)
-	
+let plc_endresponse = 0
+io.on('connection', (socket) => {//Un Socket para todos los requerimientos a postgres
+
+	socket.on('picsaving', async function (datauri, contenido, sample) { // Funcion de ejemplo borrar no importante
+		console.log("recibe", contenido);
+		await savingpic(datauri, contenido, sample)
+
 	});
-})//close io.on
+	socket.on('plcelevado', async function (p) { // comunicacion con la funcion de javascript
+		plc(p);
+	});
+
+	socket.on('plc_response', function (result_matrix) {
+		plcdatasender(result_matrix)
+	});
+
+});//Close io.on
+
+//************************************************************** Server, espera algun dato de plc para arranque de secuencia  */
+
+var net = require('net')
+var tcpipserver = net.createServer(function (connection) {
+	console.log('TCP client connected');
+	connection.write('Handshake ok!\n');
+	connection.on('data', function (data) { io.emit('Sequence_start', data.toString()); console.log("Analisis in process..."); })
+
+	//Responde a PLC cuando termine inspeccion
+	setTimeout(function respuesta() {
+		estadoconexion = connection.readyState
+		console.log("Comunicacion con el plc :" + connection.readyState)
+
+		if (estadoconexion == 'closed') {
+			console.log("Puerto de PLC cerrado reintento en 1min...")
+		}
+		if (estadoconexion == 'open') {
+			connection.write(plc_endresponse)
+		}
+
+	},20000)
+
+})
+function plcdatasender(result_matrix) {
+	
+	matrixtostring=result_matrix.toString()
+	plc_endresponse=matrixtostring
+}
+
+
+tcpipserver.listen(40000, function() { 
+    console.log('PLC Port 40000 listening...');
+ })
+
 
 //-----* Guarda imagen desde URI
-async function savingpic(datauri,serial,nmuestras){
+async function savingpic(datauri, serial, nmuestras) {
 	//serial = serial_escaneado
 	let filePath;
 	const ImageDataURI = require('image-data-uri')
-	return new Promise(async resolve =>{ 	
-        
-        nmuestras = 1
-	let filePath='C:/Users/nayeli_garcia/Desktop/projects/elevado/samples/'+serial+'';//Ruta de las carpetas por serial
-	let filevalidation=fs.existsSync(filePath)
-	
-	if (filevalidation){ 
+	return new Promise(async resolve => {
 
-		filePath=''+filePath+'/'+nmuestras+'';	
-        console.log("hola soy nsamples "+ nmuestras)	
-		ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))	
-	}
-	else{		
-		fs.mkdir(filePath,(error)=>{		
-			if (error){
-				console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/samples/' + serial + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + nmuestras + '';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
 				}
-				filePath=''+filePath+'/'+nmuestras+'';	
+				filePath = '' + filePath + '/' + nmuestras + '';
 				//filePath=''+filePath+'';		
 				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
 				console.log("Directorio creado")
@@ -59,13 +104,6 @@ async function savingpic(datauri,serial,nmuestras){
 	});//Cierra Promise
 }
 
-var net = require('net')
-var tcpipserver = net.createServer(function (connection) {
-    console.log('TCP client connected');
-
-    connection.on('data', function (data) { console.log(data.toString()) });
-
-})
-tcpipserver.listen(7777, function () {
-    console.log(' Server Port 80 listening...');
-});
+/*tcpipserver.listen(7777, function () {
+	console.log(' Server Port 80 listening...');
+});*/

@@ -13,7 +13,9 @@
 </head>
 
 <body>
-    <h1>HIGH COMPONENT</h1>
+    <div class ="bg-5">
+    <h1 class = "animated-shadow"> HIGH COMPONENT</h1>
+</div>
     <!--Creación de los 2 canvas de las camaras-->
 
     <div class="contenedor">
@@ -35,7 +37,7 @@
     
     <!-- CANVAS-->
     <canvas id="CanvasFHD" hidden width="1920" height="1080"></canvas>
-    <div><img id="ialab" src="../img/AI.png" width="195" height="70"></div>
+    <div><img id="ialab" src="../img/AI.png" width="195" height="70" onclick="Sequence()"></div>
     <div><img id="sanmina" src="../img/sanmina.png" width="195" height="100"></div>
     <canvas id="canvasCamara" width="1450" ; height="650"></canvas><!-- canvas donde se metera la imagen-->
 
@@ -44,7 +46,6 @@
 
     <script src="js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="../sweetAlert.js"></script>
     <script src="js/target_classes.js"></script>
 
 </body>

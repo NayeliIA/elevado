@@ -2,22 +2,62 @@ body {
     background-image: url('img/fondo.jpg');
     background-size: cover;
 }
+/*.bg-5{
+    background: linear-gradient(135deg, rgb(227, 227, 227) 0%, rgb(93, 104, 116) 100%);
+  }*/
+ 
+ .animated-shadow {
+   color: #ffffff;
+   font: normal 140px Varela Round, sans-serif;
+   position:absolute;
+   font-size: 80px;
+   letter-spacing: 5px;
+   text-align: center;
+   text-transform: uppercase;
+   left: 25%;
+   animation: move linear 5000ms infinite;
+   z-index: 2
+ }
+ /*Animación para rotar las sombras*/
+ @keyframes move {
+   0% {
+     text-shadow:
+       4px -4px 0 #914d4d,
+       3px -3px 0 #914d4d,
+       2px -2px 0 #914d4d,
+       1px -1px 0 #914d4d,
+       -4px 4px 0 #086368,
+       -3px 3px 0 #086368,
+       -2px 2px 0 #086368,
+       -1px 1px 0 #086368
+     ;
+   }
+   15% {
+     text-shadow:
+       -4px -4px 0 #086368,
+       -3px -3px 0 #086368,
+       -2px -2px 0 #086368,
+       -1px -1px 0 #086368,
+       4px 4px 0 #914d4d,
+       3px 3px 0 #914d4d,
+       2px 2px 0 #914d4d,
+       1px 1px 0 #914d4d
+     ;
+   }
 
-h1 {
-    top:3%;
-    position: absolute;
-    font-family: Arial Black;
-    font-weight: bold;
-    font-size: 45px;
-    background: #202020;
-    -webkit-background-clip: text;
-    text-align: center;
-    left: 30%;
-    -moz-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.4), 0px -1px 1px rgba(0, 0, 0, 0.3);
-}
+   100% {
+     text-shadow:
+       4px -4px 0 #914d4d,
+       3px -3px 0 #914d4d,
+       2px -2px 0 #914d4d,
+       1px -1px 0 #914d4d,
+       -4px 4px 0 #086368,
+       -3px 3px 0 #086368,
+       -2px 2px 0 #086368,
+       -1px 1px 0 #086368
+     ;
+   }
+ }
 
 #Captura {
 
@@ -30,17 +70,7 @@ h1 {
     left: 0.8%;
     width: 1185px;
     height: 560px;
-    /*position: absolute;
-    border-style: groove;
-    background: rgb(232, 214, 214);
-    background: linear-gradient(180deg, rgb(252, 248, 248) 30%, rgba(0, 0, 0, 1) 110%);
-    border-radius: 50px;
-    border-color: #286cc6;
-    width: 1450px;
-    height: 650px;
-    top: 22%;
-    right: 40%;
-    z-index: 1;*/
+   
 }
 .imageOverlay {
 
