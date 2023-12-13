@@ -1,0 +1,133 @@
+body {
+    background-image: url('img/fondo.jpg');
+    background-size: cover;
+}
+
+h1 {
+    top:3%;
+    position: absolute;
+    font-family: Arial Black;
+    font-weight: bold;
+    font-size: 45px;
+    background: #202020;
+    -webkit-background-clip: text;
+    text-align: center;
+    left: 30%;
+    -moz-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.4), 0px -1px 1px rgba(0, 0, 0, 0.3);
+}
+
+#Captura {
+
+    background-color: white;
+    z-index: 2;
+    border-radius: 10%;
+    position: absolute;
+    top: 2%;
+    bottom: 5%;
+    left: 0.8%;
+    width: 1185px;
+    height: 560px;
+    /*position: absolute;
+    border-style: groove;
+    background: rgb(232, 214, 214);
+    background: linear-gradient(180deg, rgb(252, 248, 248) 30%, rgba(0, 0, 0, 1) 110%);
+    border-radius: 50px;
+    border-color: #286cc6;
+    width: 1450px;
+    height: 650px;
+    top: 22%;
+    right: 40%;
+    z-index: 1;*/
+}
+.imageOverlay {
+
+    position: absolute;
+    top: 22%;
+    right: 40%;
+    display: flex;
+    justify-content: center;
+    width: 1450px;
+    height: 650px;
+    z-index: 900;
+}
+
+.highlighter {
+    background: rgb(58, 103, 157, 0.20);
+    border: 1px dashed #fff;
+    z-index: 2;
+    position: absolute;
+}
+.imageOverlay p {
+    position: absolute;
+    padding: 5px;
+    background-color: rgba(23, 23, 23, 0.85);
+    color: #FFF;
+    border: 1px dashed rgba(255, 255, 255, 0.7);
+    z-index: 2;
+    font-size: 10px;
+}
+#ialab{
+    position: absolute;
+    top: 86%;
+    right: 40%;
+}
+#sanmina{
+    position: absolute;
+    top: 86%;
+    right: 85%;
+}
+.tarjeta{
+    width: 1200px;
+    height: 580px;
+    top: 20%;
+    right: 40%;
+    background-color: #101010;
+    border-radius: 10%;
+    box-shadow: 16px 14px 20px #000000c8;
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.tarjeta::before{
+    content: "";
+    position: absolute;
+    width: 1300px;
+    height: 1500px;
+   
+    background-image: conic-gradient(#0000ff 10deg, transparent 90deg,#0000ff 210deg, transparent 230deg);
+    animation: rotar 1.5s linear infinite;
+}
+.tarjeta::after{
+    content: "";
+    position: absolute;
+    width: 1185px;
+    height: 565px;
+    background-color: #101010;
+    border-radius: 10%;
+}
+.tarjeta2{
+    z-index: 1;
+    width: 1200px;
+    height: 580px;
+    background-color: transparent;
+    border-radius: 10%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@keyframes rotar {
+    from{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(360deg);
+    }
+}
