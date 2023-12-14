@@ -2,12 +2,9 @@ body {
     background-image: url('img/fondo.jpg');
     background-size: cover;
 }
-/*.bg-5{
-    background: linear-gradient(135deg, rgb(227, 227, 227) 0%, rgb(93, 104, 116) 100%);
-  }*/
  
  .animated-shadow {
-   color: #ffffff;
+   color: #ece2e2;
    font: normal 140px Varela Round, sans-serif;
    position:absolute;
    font-size: 80px;
@@ -22,10 +19,10 @@ body {
  @keyframes move {
    0% {
      text-shadow:
-       4px -4px 0 #914d4d,
-       3px -3px 0 #914d4d,
-       2px -2px 0 #914d4d,
-       1px -1px 0 #914d4d,
+       4px -4px 0 #e84949,
+       3px -3px 0 #e84949,
+       2px -2px 0 #e84949,
+       1px -1px 0 #e84949,
        -4px 4px 0 #086368,
        -3px 3px 0 #086368,
        -2px 2px 0 #086368,
@@ -38,19 +35,19 @@ body {
        -3px -3px 0 #086368,
        -2px -2px 0 #086368,
        -1px -1px 0 #086368,
-       4px 4px 0 #914d4d,
-       3px 3px 0 #914d4d,
-       2px 2px 0 #914d4d,
-       1px 1px 0 #914d4d
+       4px 4px 0 #e84949,
+       3px 3px 0 #e84949,
+       2px 2px 0 #e84949,
+       1px 1px 0 #e84949
      ;
    }
 
    100% {
      text-shadow:
-       4px -4px 0 #914d4d,
-       3px -3px 0 #914d4d,
-       2px -2px 0 #914d4d,
-       1px -1px 0 #914d4d,
+       4px -4px 0 #e84949,
+       3px -3px 0 #e84949,
+       2px -2px 0 #e84949,
+       1px -1px 0 #e84949,
        -4px 4px 0 #086368,
        -3px 3px 0 #086368,
        -2px 2px 0 #086368,
@@ -61,7 +58,7 @@ body {
 
 #Captura {
 
-    background-color: white;
+    background-color: rgb(176, 173, 173);
     z-index: 2;
     border-radius: 10%;
     position: absolute;
@@ -112,7 +109,7 @@ body {
 .tarjeta{
     width: 1200px;
     height: 580px;
-    top: 20%;
+    top: 25%;
     right: 40%;
     background-color: #101010;
     border-radius: 10%;

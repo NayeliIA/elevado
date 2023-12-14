@@ -21,72 +21,74 @@ Captura.height = 650;
 //*************************Socket block */
 const socket = io();
 
-socket.on('Sequence_start',function(infoplc){//pg migrated
-	
-	if (infoplc!= 0) {
+socket.on('Sequence_start', function (infoplc) {//pg migrated
+
+    if (infoplc != 0) {
         cadenadedatos = infoplc.toString()
 
-        Sequence()//Activa bandera para continuar
+        Sequence(cadenadedatos)//Activa bandera para continuar
 
         console.log("Start test sequence");
-       // console.log(typeof(data))
+        // console.log(typeof(data))
         //console.log(infoplc)
-       //console.log(pn)
-        }
-        else{	
+        //console.log(pn)
+    }
+    else {
         console.log("Algo salio mal en el backend");
-        }});
-    
+    }
+});
+
 /************************************************ llamada de las funciones de forma asincrona */
-async function Sequence(){
-    
+async function Sequence(cadenadedatos) {
+
+    await plcelevado(cadenadedatos)
     await open_cam()
-    await captureimage() 
+    await captureimage()
     await predict()
-  //  await resultado()
+    //  await resultado()
     setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
 
 }
 
 //****************************************** Backend call functions
 
-function  plcelevado(p){
-	const socket = io();		
-	socket.emit('plcelevado',p);		
+async function plcelevado(p) {
+    const socket = io();
+    socket.emit('plc_response', p);
 }
-function resultado(){
-    return new Promise(async resolve =>{ 
-    if (statusfinal == 1) { await pass() }
-    else { 
-        await fail()
-     }
-     resolve('resolved')
+function resultado() {
+    return new Promise(async resolve => {
+        if (statusfinal == 1) { await pass() }
+        else {
+            await fail()
+        }
+        resolve('resolved')
     })
-    
+
 }
-function open_cam(){
-    return new Promise(async resolve =>{ 
+function open_cam() {
+    return new Promise(async resolve => {
         //if (point == 1) { camid = "0d4ef669c86943cf67333c67e090812f1261ef5f2ba5d0470516193d0c66b1a5"}
         //if (point == 2) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5"}
-    const video = document.querySelector('video')
-    const vgaConstraints = {               
-        video:{             
-            width: { ideal:1920 },
-            height:{ideal: 1080},
-            "frameRate": 30,
-            "resizeMode": "crop-and-scale",
-             deviceId:camid
-                }//llave video
-    }
+        const video = document.querySelector('video')
+        const vgaConstraints = {
+            video: {
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                "frameRate": 30,
+                "resizeMode": "crop-and-scale",
+                deviceId: camid
+            }//llave video
+        }
 
-    await navigator.mediaDevices.getUserMedia(vgaConstraints).then((stream) => { video.srcObject = stream }).catch(function (err) { console.log(err.name) })
-    /*let objetomedia=  navigator.mediaDevices.getUserMedia(vgaConstraints)
-     objetomedia.then((stream) => {video.srcObject = stream})*/
-     setTimeout(function fire(){resolve('resolved')},1000)
-     })
+        await navigator.mediaDevices.getUserMedia(vgaConstraints).then((stream) => { video.srcObject = stream }).catch(function (err) { console.log(err.name) })
+        /*let objetomedia=  navigator.mediaDevices.getUserMedia(vgaConstraints)
+         objetomedia.then((stream) => {video.srcObject = stream})*/
+        setTimeout(function fire() { resolve('resolved') }, 1000)
+    })
 }
 /************************************************ Tomar la foto */
-function captureimage(){
+function captureimage() {
     return new Promise(async resolve => {
 
         const video = document.getElementById("video")
@@ -111,12 +113,13 @@ function mapcams() {
 
 
 /************************************************ Guardado de imagen */
-function snapshot(){
-    return new Promise(async resolve =>{ 
-    var dataURI = fullimage.toDataURL('image/jpeg');
-    let serial = "1234"
-		savepic(dataURI,serial,contenido); //savepic(dataURI,point);
-        resolve('resolved')})
+function snapshot() {
+    return new Promise(async resolve => {
+        var dataURI = fullimage.toDataURL('image/jpeg');
+        let serial = "1234"
+        savepic(dataURI, serial, contenido); //savepic(dataURI,point);
+        resolve('resolved')
+    })
 }
 function stopcam() {
     return new Promise(async resolve => {
@@ -148,7 +151,7 @@ async function predict(fullimage) {
     image = tf.image.resizeBilinear(image.expandDims(), [input_size, input_size]) //  
     let predictions = await model.executeAsync(image)
 
-   // console.log(predictions)
+    // console.log(predictions)
 
     //console.log(input_size)
     await highlightResults(predictions) //espera a esta funcion para verificar si tiene corto o no
@@ -167,7 +170,7 @@ async function highlightResults(predictions) {
     for (let n = 0; n < predictions[0].length && statusfinal == 1; n++) {
         // Check scores
         if (predictions[1][n] > criterio) {
-           console.log("fallé: " + predictions[1][n])
+            console.log("fallé: " + predictions[1][n])
             statusf = "0"
             statusfinal = "0"
             console.log("statusfinalf" + statusfinal)
@@ -203,11 +206,11 @@ async function highlightResults(predictions) {
             await fail()
         }
         else {
-           // console.log("pasé: " + predictions[1][n])
+            // console.log("pasé: " + predictions[1][n])
             statusp = "1"
-           // console.log("PASEEEE 1")
+            // console.log("PASEEEE 1")
             statusfinal = 1
-           // console.log("status final " + statusfinal)
+            // console.log("status final " + statusfinal)
             await pass()
 
 
@@ -231,8 +234,8 @@ function removeHighlights() {
     children = []
 }
 /************************************************ Conexion socket */
-function savepic(uri,serial,contenido){
-     
-     const socket = io();
-     socket.emit('picsaving',uri,serial,contenido)
- }
+function savepic(uri, serial, contenido) {
+
+    const socket = io();
+    socket.emit('picsaving', uri, serial, contenido)
+}

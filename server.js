@@ -6,7 +6,7 @@ const path = require('path');
 
 const app = express();
 app.use(express.static(__dirname));
-
+let plc_endresponse = 0
 /*const key = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/recortador/encryption/server.key');
 const cert = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/recortador/encryption/server.cert');
 const httpsOptions = { key: key, cert: cert };*/
@@ -20,7 +20,7 @@ const server = app.listen(8181, function () {
 
 var io = require('socket.io')(server); //Bind socket.io to our express server.
 
-let plc_endresponse = 0
+
 io.on('connection', (socket) => {//Un Socket para todos los requerimientos a postgres
 
 	socket.on('picsaving', async function (datauri, contenido, sample) { // Funcion de ejemplo borrar no importante
@@ -28,11 +28,10 @@ io.on('connection', (socket) => {//Un Socket para todos los requerimientos a pos
 		await savingpic(datauri, contenido, sample)
 
 	});
-	socket.on('plcelevado', async function (p) { // comunicacion con la funcion de javascript
-		plc(p);
-	});
+
 
 	socket.on('plc_response', function (result_matrix) {
+		console.log(result_matrix)
 		plcdatasender(result_matrix)
 	});
 
@@ -58,19 +57,18 @@ var tcpipserver = net.createServer(function (connection) {
 			connection.write(plc_endresponse)
 		}
 
-	},20000)
+	}, 30000)
 
 })
 function plcdatasender(result_matrix) {
-	
-	matrixtostring=result_matrix.toString()
-	plc_endresponse=matrixtostring
+	matrixtostring = result_matrix.toString()
+	plc_endresponse = matrixtostring
 }
 
 
-tcpipserver.listen(40000, function() { 
-    console.log('PLC Port 40000 listening...');
- })
+tcpipserver.listen(40000, function () {
+	console.log('PLC Port 40000 listening...');
+})
 
 
 //-----* Guarda imagen desde URI
@@ -103,7 +101,3 @@ async function savingpic(datauri, serial, nmuestras) {
 		}
 	});//Cierra Promise
 }
-
-/*tcpipserver.listen(7777, function () {
-	console.log(' Server Port 80 listening...');
-});*/
