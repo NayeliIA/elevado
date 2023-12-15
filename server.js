@@ -17,7 +17,7 @@ const server = app.listen(8181, function () {
 
 });
 
-//*----- TCP/IP PLC 
+//*--------------------------------TCP/IP PLC --------------------------------------------*/
 
 var io = require('socket.io')(server); //Bind socket.io to our express server.
 
@@ -29,6 +29,8 @@ io.on('connection', (socket) => {//Un Socket para todos los requerimientos a pos
 		await savingpic(datauri, contenido, sample)
 
 	});
+
+
 
 
 	socket.on('plc_response', function (resultstatus) {
@@ -43,28 +45,29 @@ io.on('connection', (socket) => {//Un Socket para todos los requerimientos a pos
 var net = require('net')
 var tcpipserver = net.createServer(function (connection) {
 	console.log('TCP client connected');
-	connection.write('Handshake ok!\n');
-	connection.on('data', function (data) { io.emit('Sequence_start', data.toString()); console.log("Analisis in process..."); 
+	connection.write('Handshake ok!\n'); //cuando se conecte el server, manda este mensaje 
+	connection.on('data', function (data) {
+		io.emit('Sequence_start', data.toString()); console.log("Analisis in process...");
 
-	//Responde a PLC cuando termine inspeccion
-	setTimeout(function respuesta() {
-		estadoconexion = connection.readyState
-		console.log("Comunicacion con el plc :" + connection.readyState)
+		//Responde a PLC cuando termine inspeccion
+		setTimeout(function respuesta() {
+			estadoconexion = connection.readyState
+			console.log("Comunicacion con el plc :" + connection.readyState)
 
-		if (estadoconexion == 'closed') {
-			console.log("Puerto de PLC cerrado reintento en 1min...")
-		}
-		if (estadoconexion == 'open') {
-			connection.write(plc_endresponse)
-		}
+			if (estadoconexion == 'closed') {
+				console.log("Puerto de PLC cerrado reintento en 1min...")
+			}
+			if (estadoconexion == 'open') {
+				connection.write(plc_endresponse)
+			}
 
-	}, 15000)
+		}, 15000)
+	})
 })
-})
 
-function plcdatasender(result_matrix) {
-	matrixtostring = result_matrix.toString()
-	plc_endresponse = matrixtostring
+function plcdatasender(resultstatus) {
+	matrixtostring = resultstatus.toString()
+	plc_endresponse = resultstatus
 }
 
 
