@@ -6,9 +6,10 @@ const path = require('path');
 
 const app = express();
 app.use(express.static(__dirname));
+
 let plc_endresponse = 0
-/*const key = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/recortador/encryption/server.key');
-const cert = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/recortador/encryption/server.cert');
+/*const key = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/projects/elevado/encryption/server.key');
+const cert = fs.readFileSync('C:/Users/nayeli_garcia/Desktop/projects/elevado/encryption/server.cert');
 const httpsOptions = { key: key, cert: cert };*/
 
 const server = app.listen(8181, function () {
@@ -30,9 +31,9 @@ io.on('connection', (socket) => {//Un Socket para todos los requerimientos a pos
 	});
 
 
-	socket.on('plc_response', function (result_matrix) {
-		console.log(result_matrix)
-		plcdatasender(result_matrix)
+	socket.on('plc_response', function (resultstatus) {
+		console.log(resultstatus)
+		plcdatasender(resultstatus)
 	});
 
 });//Close io.on
@@ -43,7 +44,7 @@ var net = require('net')
 var tcpipserver = net.createServer(function (connection) {
 	console.log('TCP client connected');
 	connection.write('Handshake ok!\n');
-	connection.on('data', function (data) { io.emit('Sequence_start', data.toString()); console.log("Analisis in process..."); })
+	connection.on('data', function (data) { io.emit('Sequence_start', data.toString()); console.log("Analisis in process..."); 
 
 	//Responde a PLC cuando termine inspeccion
 	setTimeout(function respuesta() {
@@ -57,9 +58,10 @@ var tcpipserver = net.createServer(function (connection) {
 			connection.write(plc_endresponse)
 		}
 
-	}, 30000)
-
+	}, 15000)
 })
+})
+
 function plcdatasender(result_matrix) {
 	matrixtostring = result_matrix.toString()
 	plc_endresponse = matrixtostring

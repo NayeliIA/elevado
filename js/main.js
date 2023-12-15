@@ -6,6 +6,7 @@ let statusf = 0
 let statusp = 0
 let statusfinal = 1
 let statusfinal1 = 1
+let resulstatus
 //Variable camid para las camaras
 let camid
 var contenido
@@ -26,7 +27,7 @@ socket.on('Sequence_start', function (infoplc) {//pg migrated
     if (infoplc != 0) {
         cadenadedatos = infoplc.toString()
 
-        Sequence(cadenadedatos)//Activa bandera para continuar
+        Sequence()//Activa bandera para continuar
 
         console.log("Start test sequence");
         // console.log(typeof(data))
@@ -39,12 +40,13 @@ socket.on('Sequence_start', function (infoplc) {//pg migrated
 });
 
 /************************************************ llamada de las funciones de forma asincrona */
-async function Sequence(cadenadedatos) {
+async function Sequence() {
 
-    await plcelevado(cadenadedatos)
+   
     await open_cam()
     await captureimage()
     await predict()
+    await plcelevado()
     //  await resultado()
     setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
 
@@ -52,9 +54,9 @@ async function Sequence(cadenadedatos) {
 
 //****************************************** Backend call functions
 
-async function plcelevado(p) {
+async function plcelevado() {
     const socket = io();
-    socket.emit('plc_response', p);
+    socket.emit('plc_response',resulstatus);
 }
 function resultado() {
     return new Promise(async resolve => {
@@ -222,9 +224,11 @@ async function highlightResults(predictions) {
 
 async function pass() {
     document.getElementById('tarjeta2').style.background = '#00ff40'
+    resulstatus = "Pass"
 }
 async function fail() {
     document.getElementById('tarjeta2').style.background = '#cf010b'
+    resulstatus = "Fail"
 }
 
 function removeHighlights() {
