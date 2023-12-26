@@ -30,9 +30,6 @@ io.on('connection', (socket) => {//Un Socket para todos los requerimientos a pos
 
 	});
 
-
-
-
 	socket.on('plc_response', function (resultstatus) {
 		console.log(resultstatus)
 		plcdatasender(resultstatus)

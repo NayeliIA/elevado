@@ -48,7 +48,7 @@ async function Sequence() {
     await predict()
     await plcelevado()
     //  await resultado()
-    setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
+    //setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
 
 }
 
@@ -112,8 +112,6 @@ function mapcams() {
             console.log('Cameras found', filtered);
         });
 }
-
-
 /************************************************ Guardado de imagen */
 function snapshot() {
     return new Promise(async resolve => {
@@ -166,6 +164,59 @@ loadmodel()
 var children = []
 let criterio = 0.10
 let criterio2 = 0.30
+
+/*async function highlightResults(predictions) {
+    let highestScore = 0;
+    let highestIndex = 0;
+
+    for (let n = 0; n < predictions[0].length; n++) {
+        if (predictions[1][n] > highestScore) {
+            highestScore = predictions[1][n];
+            highestIndex = n;
+        }
+    
+
+    if (highestScore > criterio) {
+        console.log("fallé: " + highestScore);
+        const p = document.createElement('p');
+        p.innerText = TARGET_CLASSES[predictions[2][highestIndex]] + ': ' + Math.round(parseFloat(predictions[1][highestIndex]) * 100) + '%';
+        console.log(p.innerText)
+        bboxLeft = (predictions[0][n][0] * 1450) //900 es el Width de la imagen y hace match con el with del overlay
+        bboxTop = (predictions[0][n][1] * 650) //540 es el Height de la imagen y hace match con el with del overlay
+        bboxWidth = (predictions[0][n][2] * 1450) - bboxLeft//800 en vez del video.width
+        bboxHeight = (predictions[0][n][3] * 650) - bboxTop//448 en vez del video.width
+        console.log("X1:" + bboxLeft, "Y1:" + bboxTop, "W:" + bboxWidth, "H:" + bboxHeight)
+        p.style = 'margin-left: ' + bboxLeft + 'px; margin-top: '
+            + (bboxTop - 22) + 'px; width: '
+            + (bboxWidth - 8) + 'px; top: 0; left: 0;'
+
+        console.log(p.style)
+        const highlighter = document.createElement('div')
+        highlighter.setAttribute('class', 'highlighter')
+        highlighter.style = 'left: ' + bboxLeft + 'px; top: '
+            + bboxTop + 'px; width: '
+            + bboxWidth + 'px; height: '
+            + bboxHeight + 'px;'
+        imageOverlay.appendChild(highlighter)
+        imageOverlay.appendChild(p)
+        children.push(highlighter)
+        children.push(p)
+        //statusf = 0
+        console.log("FALLEEEEEE 1")
+        statusfinal = 0
+        await fail()
+    
+    } else {
+        console.log("pasé: " + highestScore);
+         // console.log("pasé: " + predictions[1][n])
+         statusp = "1"
+         // console.log("PASEEEE 1")
+         statusfinal = 1
+         // console.log("status final " + statusfinal)
+        await pass();
+    }
+}
+}*/
 //esta funcion es para verificar el corto de l primer punto
 async function highlightResults(predictions) {
 
