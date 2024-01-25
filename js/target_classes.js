@@ -1,3 +1,3 @@
 TARGET_CLASSES = {
-  0: "Screw"
+  0: "Short"
 }

@@ -24,12 +24,13 @@ var io = require('socket.io')(server); //Bind socket.io to our express server.
 
 io.on('connection', (socket) => {//Un Socket para todos los requerimientos a postgres
 
-	socket.on('picsaving', async function (datauri, contenido, sample) { // Funcion de ejemplo borrar no importante
+	socket.on('picsaving', async function (datauri, ubicacion,contenido, selectedOption,sample) { // Funcion de ejemplo borrar no importante
 		console.log("recibe", contenido);
-		await savingpic(datauri, contenido, sample)
+		await savingpic(datauri,ubicacion, contenido,selectedOption, sample)
 
 	});
 
+	
 	socket.on('plc_response', function (resultstatus) {
 		console.log(resultstatus)
 		plcdatasender(resultstatus)
@@ -74,19 +75,79 @@ tcpipserver.listen(40000, function () {
 
 
 //-----* Guarda imagen desde URI
-async function savingpic(datauri, serial, nmuestras) {
+async function savingpic(datauri, carpeta,ubicacion, selectedOption,nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+console.log(carpeta)
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/samples/' +selectedOption+'';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + carpeta)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+/*
+async function savingpicElevados(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
 	//serial = serial_escaneado
 	let filePath;
 	const ImageDataURI = require('image-data-uri')
 	return new Promise(async resolve => {
 
 		nmuestras = 1
-		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/samples/' + serial + '';//Ruta de las carpetas por serial
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' +selectedOption +'';//Ruta de las carpetas por serial
 		let filevalidation = fs.existsSync(filePath)
 
 		if (filevalidation) {
 
-			filePath = '' + filePath + '/' + nmuestras + '';
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+
+async function savingpicFisico(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			ffilePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
 			console.log("hola soy samples " + nmuestras)
 			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
 		}
@@ -103,3 +164,179 @@ async function savingpic(datauri, serial, nmuestras) {
 		}
 	});//Cierra Promise
 }
+async function savingpicExceso(datauri, carpeta, ubicacion, selectedOption,nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption+'';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + nmuestras + '';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+async function savingpicInsuficiencia(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + nmuestras + '';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+
+async function savingpicDelaminacion(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+
+async function savingpicBolitas(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+async function savingpicPin(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}
+async function savingpicCobre(datauri, carpeta, ubicacion,selectedOption, nmuestras) {
+	//serial = serial_escaneado
+	let filePath;
+	const ImageDataURI = require('image-data-uri')
+	return new Promise(async resolve => {
+
+		nmuestras = 1
+		let filePath = 'C:/Users/nayeli_garcia/Desktop/projects/elevado/muestras/' + selectedOption + '';//Ruta de las carpetas por serial
+		let filevalidation = fs.existsSync(filePath)
+
+		if (filevalidation) {
+
+			filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+			console.log("hola soy samples " + nmuestras)
+			ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res))
+		}
+		else {
+			fs.mkdir(filePath, (error) => {
+				if (error) {
+					console.log(error.message);//en caso de que el folder ya exista manda un error y evita hacer otro folder con el mismo nombre.
+				}
+				filePath = '' + filePath + '/' + carpeta + '_'+ubicacion+'';
+				//filePath=''+filePath+'';		
+				ImageDataURI.outputFile(datauri, filePath).then(res => console.log(res));
+				console.log("Directorio creado")
+			});
+		}
+	});//Cierra Promise
+}*/

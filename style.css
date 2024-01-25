@@ -2,7 +2,90 @@ body {
   background-image: url('img/fondo.jpg');
   background-size: cover;
 }
+button{
+  height: 40px;
+  width: 100px;
+  font-size:x-large;
+  color: #b44e4e;
+}
 
+#serial{
+  font-size: x-large;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+  
+}
+#myInput{
+  height:20px;
+  width:170px;
+  top:5%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+}
+#ubicacionE{
+  font-size:x-large;
+   margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+}
+#ubicacion{
+  height:20px;
+  width:170px;
+  top:5%;
+   margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+}
+#elementosContainer{
+   left: 10%;
+}
+#defecto1{
+  font-size:x-large;
+   margin-bottom: 10px;
+  margin-top: 20px;
+  margin-left:30px;
+}
+#opciones{
+  height:20px;
+  width:170px;
+  top:5%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+}
+#enviar{
+  width:200px;
+  height:30px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:20px;
+}
+
+#nuevo{
+  height:20px;
+  width:170px;
+  top:5%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left:10px;
+}
+#agregar{
+  margin-left:50px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+#agregarDefectoBtn{
+  height: 70px;
+  width: 200px;
+  color: #b44e4e;
+  position: absolute;
+  font-size:x-large;
+  font-weight: 100;
+  left: 5%;
+  top: 4%;
+}
 .animated-shadow {
   color: #ece2e2;
   font: normal 140px Varela Round, sans-serif;
@@ -166,4 +249,19 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+
+label {
+  display: flex;
+ /* align-items: center;*/
+ /* justify-content: center;*/
+ color: aqua;
+  margin: 0 auto;
+}
+
+select {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  
 }
