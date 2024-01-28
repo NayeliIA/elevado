@@ -1,10 +1,9 @@
 //nombre de la imagen
 let sample = "1"
-let pasa
-let falla
 let serialvalidation
 //let serial = "soy serial"
 let serialv = document.getElementById('myInput').value
+let serial
 let ubicacionv = document.getElementById('ubicacion').value
 let ubicacion
 let statusf = 0
@@ -28,6 +27,21 @@ let Captura = document.getElementById('Captura')
 let Capturactx = Captura.getContext('2d')
 Captura.width = 1450;
 Captura.height = 650;
+
+let Captura1 = document.getElementById('Captura1')
+let Captura1ctx = Captura1.getContext('2d')
+Captura1.width = 1450;
+Captura1.height = 650;
+
+let Captura2 = document.getElementById('Captura2')
+let Captura2ctx = Captura2.getContext('2d')
+Captura2.width = 1450;
+Captura2.height = 650;
+
+let Captura3 = document.getElementById('Captura3')
+let Captura3ctx = Captura3.getContext('2d')
+Captura3.width = 1450;
+Captura3.height = 650;
 
 //*************************Socket block */
 const socket = io();
@@ -69,7 +83,7 @@ function captura_datosNuevo() {
 }
 function captura_datos1() {
     console.log("hola estoy en captura de datos")
-    serialv = document.getElementById('myInput').value
+    serial = document.getElementById('myInput').value
     sn1 = serial //aqui se guarda el serial en una variable
     //cutsn = sn.substring(0, 12)
 
@@ -78,11 +92,11 @@ function captura_datos1() {
         document.getElementById('myInput').disabled = true
         document.getElementById('myInput').style.background = "#E6F9FF"
         document.getElementById('myInput').style.textAlign = "center"
-        serialv = document.getElementById('ubicacion')
-        serialv.focus()
+        serial = document.getElementById('ubicacion')
+        serial.focus()
 
     } else {
-        serialv.focus() //si no, que siga el focus hasta que haya informacion
+        serial.focus() //si no, que siga el focus hasta que haya informacion
     }
 
 }
@@ -121,19 +135,36 @@ function captura_datos3() {
 }
 
 /************************************************ llamada de las funciones de forma asincrona */
-
 async function Sequence() {
     //const selectedOption = document.getElementById("lang").value;
-    //await loadmodel()
-    await open_cam()
-    await captureimage()
-    await snapshot()
-    // await guardamuestra((document.getElementById("lang").value))
-    //await snapshotCortos()
-    await predict()
-    await clasificacionPrueba()
-    await plcelevado()
-    await stopcam()
+    for (let point = 0; point < 4; point++) {
+        await open_cam(point)
+        await capturacanvas(point)
+        await snapshot()
+        // await guardamuestra((document.getElementById("lang").value))
+        //await snapshotCortos()
+        await predict()
+        await plcelevado()
+        await stopcam() 
+        await removeHighlights()  
+    }
+   
+}
+
+async function capturacanvas() {
+    //await open_cam(1)
+    await captureimage(1, Capturactx)
+    console.log("punto 1")
+    // await open_cam(2)
+    await captureimage(2, Captura1ctx)
+    console.log("punto 2")
+    // await open_cam(3)
+    await captureimage(3, Captura2ctx)
+    console.log("punto 3")
+    // await open_cam(4)
+    await captureimage(4, Captura3ctx)
+    console.log("estoy en el punto 4")
+
 }
 //  await resultado()
 //setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
@@ -154,10 +185,10 @@ function resultado() {
     })
 
 }
-function open_cam() {
+function open_cam(point) {
     return new Promise(async resolve => {
-        //if (point == 1) { camid = "0d4ef669c86943cf67333c67e090812f1261ef5f2ba5d0470516193d0c66b1a5"}
-        //if (point == 2) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5"}
+        if (point == 1) { camid = "0d4ef669c86943cf67333c67e090812f1261ef5f2ba5d0470516193d0c66b1a5" }
+        if (point == 2) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5" }
         const video = document.querySelector('video')
         const vgaConstraints = {
             video: {
@@ -176,21 +207,23 @@ function open_cam() {
     })
 }
 /************************************************ Tomar la foto */
-function captureimage() {
-    return new Promise(async resolve => {
+function captureimage(point, ctx) {
+    return new Promise(resolve => {
+        const video = document.getElementById("video");
+        console.log("Estoy en el punto " + point);
 
-        const video = document.getElementById("video")
+        fullimagectx.drawImage(video, 0, 0, fullimage.width, fullimage.height);
+        console.log("Estoy en el canvas");
+        ctx.drawImage(fullimage, 0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        fullimagectx.drawImage(video, 0, 0, fullimage.width, fullimage.height) // Dibuja en el fullimage la captura de la imagen 1
-        console.log("estoy en el canvas")
-        Capturactx.drawImage(fullimage, 0, 0, Captura.width, Captura.height)
-        setTimeout(function fire() { resolve('resolved'); }, 1000) //tiempo para el opencam
-        //setTimeout(function fire() { resolve('resolved'); }, 2000);//Temporal para programacion de secuencia
-        console.log("FHD Image captured")
-        resolve('resolved')
-    })
-
+        setTimeout(function () {
+            console.log("FHD Image captured");
+            resolve('resolved');
+        }, 1000); // Tiempo para el opencam
+    });
 }
+
+
 function mapcams() {
     navigator.mediaDevices.enumerateDevices()
         .then(devices => {
@@ -204,9 +237,13 @@ function snapshot() {
         let carpeta = document.getElementById("myInput").value;
         let ubicacion = document.getElementById("ubicacion").value;
         let selectedOption = document.getElementById("opciones").value;
-        var dataURI = fullimage.toDataURL('image/jpeg');
-        // let serial = "1234"
-        savepic(dataURI, carpeta, ubicacion, selectedOption, contenido); //Socket que guarda la imagen depende la ubicacion y el defecto
+        for (let i = 0; i < 4; i++) {
+            fullimage = document.getElementById("CanvasFHD")
+
+            var dataURI = fullimage.toDataURL('image/jpeg');
+            // let serial = "1234"
+            savepic(dataURI, carpeta, ubicacion, selectedOption, contenido); //Socket que guarda la imagen depende la ubicacion y el defecto
+        }
         resolve('resolved')
     })
 }
@@ -223,7 +260,6 @@ function stopcam() {
     });//Cierra Promise principal
 }
 let model = new cvstfjs.ObjectDetectionModel()
-let model1 = new cvstfjs.ClassificationModel();
 //**************************************************Modelo cargado de la IA***************************************************************** */
 async function loadmodel() {
 
@@ -231,30 +267,10 @@ async function loadmodel() {
     console.log(model)
 
 }
-async function loadmodelcla(){
-    model1 = new cvstfjs.ClassificationModel();
-    await model1.loadModelAsync('modelmcla/model.json');
-    console.log(model1)
-}
 
 //analiza la imagen full 
-async function clasificacionPrueba(fullimage){
-    result = await model1.executeAsync(fullimage);
-    pasa = result[0][0]
-    falla = result [0][1]
-    if (pasa >= falla) { //Evalua el valor en la posicion 0 que da la redneuronal
-        //console.log("Unit pass" , pass)
-        statusfinal = "1"
-        console.log("clasificacion pasó")
-        await pass()
-    }else{
-        statusfinal = "0"
-        console.log("clasificacion falló")
-        await fail()
-    }
-}
-loadmodelcla()
 async function predict(fullimage) {
+    for(let point = 0; point < 4; point ++){
     fullimage = document.getElementById('CanvasFHD')
     let input_size = model.input_size
 
@@ -266,12 +282,12 @@ async function predict(fullimage) {
     // console.log(predictions)
 
     //console.log(input_size)
-    await highlightResults(predictions) //espera a esta funcion para verificar si tiene corto o no
-
+    await highlightResults(predictions, point) //espera a esta funcion para verificar si tiene corto o no
+    
+    }
 }
+loadmodel()
 
- loadmodel()
- 
 
 //************************************************************************************** Funciones de recuadros ubica */
 var children = []
@@ -316,7 +332,9 @@ async function highlightResults(predictions) {
             //statusf = 0
             console.log("FALLEEEEEE 1")
             statusfinal = 0
+           
             await fail()
+            
         }
         else {
             // console.log("pasé: " + predictions[1][n])
@@ -324,13 +342,17 @@ async function highlightResults(predictions) {
             // console.log("PASEEEE 1")
             statusfinal = 1
             // console.log("status final " + statusfinal)
+           
             await pass()
-
+            
 
         }
+        
         console.log("este es el:" + statusfinal)
 
     }
+   
+   
 }
 
 async function pass() {
@@ -342,7 +364,7 @@ async function fail() {
     resulstatus = "Fail"
 }
 
-function removeHighlights() {
+async function removeHighlights() {
     for (let i = 0; i < children.length; i++) {
         imageOverlay.removeChild(children[i])
     }
@@ -361,8 +383,8 @@ function NuevoDefecto() {
 function handleOptionChange() {
     selectedOption = document.getElementById("opciones").value;
     if (selectedOption === "Nuevo Defecto") {
-        var password = prompt("Por favor, ingresa la contraseña:", "", {mask: "*{4}"});
-        
+        var password = prompt("Por favor, ingresa la contraseña:", "", { mask: "*{4}" });
+
         if (password === "IALAB") {
             NuevoDefecto();
         } else {
@@ -432,18 +454,18 @@ function inicializarDefectosSelect() {
         selectElement.addEventListener("change", function () {
             ubicacion = document.getElementById('ubicacion')
             ubicacionE = document.getElementById('ubicacionE')
-           let serial = document.getElementById('serial')
+            let serial = document.getElementById('serial')
             const seleccion = selectElement.value;
             if (seleccion === "Nuevo Defecto") {
                 handleOptionChange();
                 myInput.style.display = "none"
                 serial.style.display = "none"
-                ubicacionE.style.display="none"
+                ubicacionE.style.display = "none"
                 ubicacion.disabled = true
                 opciones.style.display = "none"
-                agregar.style.display="block"
+                agregar.style.display = "block"
             } else {
-                agregar.style.display = "noe";
+                agregar.style.display = "none";
                 nuevo.style.display = "none";
             }
         });
