@@ -11,6 +11,12 @@ let statusp = 0
 let statusfinal = 1
 let statusfinal1 = 1
 let resulstatus
+
+let coord1 = []
+let coord2 = []
+let coord3 = []
+let coord4 = []
+
 selectedOption = document.getElementById("opciones").value;
 //let selectedOption = document.getElementById("lang").value;
 //const Option = lang.options[lang.selectedIndex].value;
@@ -19,6 +25,9 @@ let selectedPassword = document.getElementById("contraseña").value;
 //Variable camid para las camaras
 let camid
 var contenido
+var sleep = function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
 /************************************************ canva de la imagen a guardar */
 let fullimage = document.getElementById('CanvasFHD')
 let fullimagectx = fullimage.getContext('2d')
@@ -30,19 +39,23 @@ Captura.height = 650;
 
 let Captura1 = document.getElementById('Captura1')
 let Captura1ctx = Captura1.getContext('2d')
-Captura1.width = 1450;
-Captura1.height = 650;
+Captura1.width = 168;
+Captura1.height = 168;
 
 let Captura2 = document.getElementById('Captura2')
 let Captura2ctx = Captura2.getContext('2d')
-Captura2.width = 1450;
-Captura2.height = 650;
+Captura2.width = 168;
+Captura2.height = 168;
 
 let Captura3 = document.getElementById('Captura3')
 let Captura3ctx = Captura3.getContext('2d')
-Captura3.width = 1450;
-Captura3.height = 650;
+Captura3.width = 168;
+Captura3.height = 168;
 
+let Captura4 = document.getElementById('Captura4')
+let Captura4ctx = Captura4.getContext('2d')
+Captura4.width = 168;
+Captura4.height = 168;
 //*************************Socket block */
 const socket = io();
 
@@ -139,33 +152,47 @@ async function Sequence() {
     //const selectedOption = document.getElementById("lang").value;
     for (let point = 0; point < 4; point++) {
         await open_cam(point)
-        await capturacanvas(point)
-        await snapshot()
-        // await guardamuestra((document.getElementById("lang").value))
-        //await snapshotCortos()
+        await captureimage(point)
+        await snapshot(fullimage,1,point) 
         await predict()
+        await guardarrecortes(point)
         await plcelevado()
-        await stopcam() 
-        await removeHighlights()  
+        await stopcam()
+        await removeHighlights()
     }
    
-}
-
-async function capturacanvas() {
-    //await open_cam(1)
-    await captureimage(1, Capturactx)
-    console.log("punto 1")
-    // await open_cam(2)
-    await captureimage(2, Captura1ctx)
-    console.log("punto 2")
-    // await open_cam(3)
-    await captureimage(3, Captura2ctx)
-    console.log("punto 3")
-    // await open_cam(4)
-    await captureimage(4, Captura3ctx)
-    console.log("estoy en el punto 4")
 
 }
+
+async function guardarrecortes(point) {
+    return new Promise(async resolve => {
+    if (point == 0) {
+        Captura1ctx.drawImage(fullimage, coord1[0], coord1[1], coord1[2], coord1[3], 0, 0, Captura1ctx.canvas.width, Captura1ctx.canvas.height) // coordenada y tamaño de recorte en el canvas
+        console.log("contenido de captura1ctx: "+Captura1.toDataURL())
+        await sleep(1000)
+       // console.log("contenido visible antes de snapshot " + Captura1.toDataURL())
+        await snapshot(Captura1, 0,0)
+        await loadmodelCla(Captura1)
+    }
+    if (point == 1) {
+        Captura2ctx.drawImage(fullimage, coord1[0], coord1[1], coord1[2], coord1[3], 0, 0, Captura2ctx.canvas.width, Captura2ctx.canvas.height) 
+        await snapshot(Captura2, 0,1)// coordenada y tamaño de recorte en el canvas
+        await loadmodelCla(Captura2)
+    }
+    if (point == 2) {
+        Captura3ctx.drawImage(fullimage, coord1[0], coord1[1], coord1[2], coord1[3], 0, 0, Captura3ctx.canvas.width, Captura3ctx.canvas.height) // coordenada y tamaño de recorte en el canvas
+        await snapshot(Captura3, 0,2)
+        await loadmodelCla(Captura3)
+    }
+    if (point == 3) {
+        Captura4ctx.drawImage(fullimage, coord1[0], coord1[1], coord1[2], coord1[3], 0, 0, Captura4ctx.canvas.width, Captura4ctx.canvas.height) // coordenada y tamaño de recorte en el canvas
+        await snapshot(Captura4, 0,3)
+        await loadmodelCla(Captura4)
+    }
+    resolve('resolved')
+})
+}
+
 //  await resultado()
 //setTimeout(function fire() { location.reload() }, 2000);//reiniciamos la pagina despues de 2 segundos
 
@@ -189,6 +216,8 @@ function open_cam(point) {
     return new Promise(async resolve => {
         if (point == 1) { camid = "0d4ef669c86943cf67333c67e090812f1261ef5f2ba5d0470516193d0c66b1a5" }
         if (point == 2) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5" }
+        if (point == 3) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5" }
+        if (point == 4) { camid = "b3cc0e2eaafdd99e26e48ebd07fbd6d9bfa524e087a03179f346abcb403278b5" }
         const video = document.querySelector('video')
         const vgaConstraints = {
             video: {
@@ -203,23 +232,23 @@ function open_cam(point) {
         await navigator.mediaDevices.getUserMedia(vgaConstraints).then((stream) => { video.srcObject = stream }).catch(function (err) { console.log(err.name) })
         /*let objetomedia=  navigator.mediaDevices.getUserMedia(vgaConstraints)
          objetomedia.then((stream) => {video.srcObject = stream})*/
-        setTimeout(function fire() { resolve('resolved') }, 1000)
+        setTimeout(function fire() { resolve('resolved') }, 2000)
     })
 }
 /************************************************ Tomar la foto */
-function captureimage(point, ctx) {
+async function captureimage(point) {
     return new Promise(resolve => {
+       // fullimage = document.getElementById("CanvasFHD")
         const video = document.getElementById("video");
+       // let context = video.getContext('2d')
         console.log("Estoy en el punto " + point);
-
-        fullimagectx.drawImage(video, 0, 0, fullimage.width, fullimage.height);
-        console.log("Estoy en el canvas");
-        ctx.drawImage(fullimage, 0, 0, ctx.canvas.width, ctx.canvas.height);
-
+       
+        Capturactx.drawImage(video, 0, 0, Capturactx.canvas.width, Capturactx.canvas.height);
+        console.log("soy captura "+Capturactx)
         setTimeout(function () {
             console.log("FHD Image captured");
             resolve('resolved');
-        }, 1000); // Tiempo para el opencam
+        }, 2000); // Tiempo para el opencam
     });
 }
 
@@ -232,18 +261,19 @@ function mapcams() {
         });
 }
 /************************************************ Guardado de imagen */
-function snapshot() {
-    return new Promise(async resolve => {
-        let carpeta = document.getElementById("myInput").value;
-        let ubicacion = document.getElementById("ubicacion").value;
-        let selectedOption = document.getElementById("opciones").value;
-        for (let i = 0; i < 4; i++) {
-            fullimage = document.getElementById("CanvasFHD")
 
-            var dataURI = fullimage.toDataURL('image/jpeg');
-            // let serial = "1234"
-            savepic(dataURI, carpeta, ubicacion, selectedOption, contenido); //Socket que guarda la imagen depende la ubicacion y el defecto
-        }
+function snapshot(imagenr, folder,point) {
+    
+    return new Promise(async resolve => {
+        let carpeta = document.getElementById("myInput").value; //serial
+        let ubicacion = document.getElementById("ubicacion").value; //ubicacion
+        let selectedOption = document.getElementById("opciones").value; //defectos
+        //fullimage = document.getElementById("CanvasFHD")
+        console.log("antes de guardar la imagen snapshot")
+        var dataURI = imagenr.toDataURL('image/jpeg');
+        console.log(imagenr)
+        savepic(dataURI, carpeta, ubicacion, selectedOption, folder,point); //Socket que guarda la imagen depende la ubicacion y el defecto
+       
         resolve('resolved')
     })
 }
@@ -260,17 +290,35 @@ function stopcam() {
     });//Cierra Promise principal
 }
 let model = new cvstfjs.ObjectDetectionModel()
+
 //**************************************************Modelo cargado de la IA***************************************************************** */
 async function loadmodel() {
-
     await model.loadModelAsync('modelm/model.json')
     console.log(model)
 
 }
 
+async function loadmodelCla(imagenr) {
+    let model2 = new cvstfjs.ClassificationModel();
+    await model2.loadModelAsync('modelmcla/model.json');
+    console.log(model2)
+
+    result = await model2.executeAsync(imagenr)
+    console.log(result)
+    pasa = result[0][0]
+    falla = result[0][1]
+    if (pasa >= falla) { //Evalua el valor en la posicion 0 que da la redneuronal
+        statusfinal = 1;
+        console.log(statusfinal)
+    }
+    else {
+        statusfinal = 0;
+        console.log(statusfinal)
+    }
+}
 //analiza la imagen full 
 async function predict(fullimage) {
-    for(let point = 0; point < 4; point ++){
+
     fullimage = document.getElementById('CanvasFHD')
     let input_size = model.input_size
 
@@ -278,25 +326,21 @@ async function predict(fullimage) {
     let image = tf.browser.fromPixels(fullimage, 3)
     image = tf.image.resizeBilinear(image.expandDims(), [input_size, input_size]) //  
     let predictions = await model.executeAsync(image)
+    await highlightResults(predictions) //espera a esta funcion para verificar si tiene corto o no
+    sleep(1000);
 
-    // console.log(predictions)
-
-    //console.log(input_size)
-    await highlightResults(predictions, point) //espera a esta funcion para verificar si tiene corto o no
-    
-    }
 }
 loadmodel()
 
 
+
 //************************************************************************************** Funciones de recuadros ubica */
 var children = []
-let criterio = 0.10
-let criterio2 = 0.30
+let criterio = 0.00003
 //esta funcion es para verificar el corto de l primer punto
-async function highlightResults(predictions) {
+async function highlightResults(predictions, point) {
 
-    for (let n = 0; n < predictions[0].length && statusfinal == 1; n++) {
+    for (let n = 0; n < predictions[0].length; n++) {
         // Check scores
         if (predictions[1][n] > criterio) {
             console.log("fallé: " + predictions[1][n])
@@ -314,6 +358,30 @@ async function highlightResults(predictions) {
             bboxWidth = (predictions[0][n][2] * 1450) - bboxLeft//800 en vez del video.width
             bboxHeight = (predictions[0][n][3] * 650) - bboxTop//448 en vez del video.width
             console.log("X1:" + bboxLeft, "Y1:" + bboxTop, "W:" + bboxWidth, "H:" + bboxHeight)
+
+            if (point == 0) {
+                coord1.push(bboxLeft)
+                coord1.push(bboxTop)
+                coord1.push(bboxWidth)
+                coord1.push(bboxHeight)
+            }
+            else if (point == 1) {
+                coord2.push(bboxLeft)
+                coord2.push(bboxTop)
+                coord2.push(bboxWidth)
+                coord2.push(bboxHeight)
+            }
+            else if (point == 2) {
+                coord3.push(bboxLeft)
+                coord3.push(bboxTop)
+                coord3.push(bboxWidth)
+                coord3.push(bboxHeight)
+            } else {
+                coord4.push(bboxLeft)
+                coord4.push(bboxTop)
+                coord4.push(bboxWidth)
+                coord4.push(bboxHeight)
+            }
             p.style = 'margin-left: ' + bboxLeft + 'px; margin-top: '
                 + (bboxTop - 22) + 'px; width: '
                 + (bboxWidth - 8) + 'px; top: 0; left: 0;'
@@ -325,6 +393,7 @@ async function highlightResults(predictions) {
                 + bboxTop + 'px; width: '
                 + bboxWidth + 'px; height: '
                 + bboxHeight + 'px;'
+
             imageOverlay.appendChild(highlighter)
             imageOverlay.appendChild(p)
             children.push(highlighter)
@@ -332,27 +401,27 @@ async function highlightResults(predictions) {
             //statusf = 0
             console.log("FALLEEEEEE 1")
             statusfinal = 0
-           
+
             await fail()
-            
+
         }
         else {
-            // console.log("pasé: " + predictions[1][n])
+            console.log("pasé: " + predictions[1][n])
             statusp = "1"
             // console.log("PASEEEE 1")
             statusfinal = 1
             // console.log("status final " + statusfinal)
-           
+
             await pass()
-            
+
 
         }
-        
+
         console.log("este es el:" + statusfinal)
 
     }
-   
-   
+
+
 }
 
 async function pass() {
@@ -505,9 +574,9 @@ function agregar() {
 
 
 
-function savepic(uri, carpeta, ubicacion, selectedOption, contenido) {
+function savepic(uri, carpeta, ubicacion, selectedOption, folder,point) {
 
     const socket = io();
-    socket.emit('picsaving', uri, carpeta, ubicacion, selectedOption, contenido)
+    socket.emit('picsaving', uri, carpeta, ubicacion, selectedOption, folder,point)
 }
 

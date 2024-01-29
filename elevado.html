@@ -17,39 +17,42 @@
     </div>
     <button type="button" id="agregarDefectoBtn" onclick="mostrarElementos()"><b>Agregar Defecto</b></button>
     <div id="elementosContainer" style="display:none">
-    <!--Creación de los 2 canvas de las camaras-->
-    <label  id = "serial">Serial</label>
-    <input type="text" id="myInput" autofocus onkeydown="if (event.keyCode==13){captura_datos1()}">
+        <!--Creación de los 2 canvas de las camaras-->
+        <label id="serial">Serial</label>
+        <input type="text" id="myInput" autofocus onkeydown="if (event.keyCode==13){captura_datos1()}">
 
-    <label style="display: none;">Contraseña</label>
-    <input type="password" id="contraseña" autofocus hidden>
+        <label style="display: none;">Contraseña</label>
+        <input type="password" id="contraseña" autofocus hidden>
 
-    <label id="ubicacionE" >Ubicación</label>
-    <input type="text" id="ubicacion" autofocus onkeydown="if (event.keyCode==13){captura_datos2()}">
+        <label id="ubicacionE">Ubicación</label>
+        <input type="text" id="ubicacion" autofocus onkeydown="if (event.keyCode==13){captura_datos2()}">
 
-    <label id="defecto1">Defecto</label>
-    <div id="nuevaopcioncontainer" style="display:none"></div>
+        <label id="defecto1">Defecto</label>
+        <div id="nuevaopcioncontainer" style="display:none"></div>
 
-    <select  id="opciones"></select> 
-    <input type="submit" value="Enviar" id ="enviar" onclick="Sequence()"   />
+        <select id="opciones"></select>
+        <input type="submit" value="Enviar" id="enviar" onclick="Sequence()" />
 
-    <label style="display: none;" ></label>
-    <input type="text" id="nuevo" hidden autofocus onkeydown="if (event.keyCode==13){captura_datosNuevo()}">
-    <button type="button" value="Agregar" hidden id="agregar"  onclick= "window.location.href = 'elevado.html';" > Agregar</button> 
-</div>
-   
-<!--Creación de menú de defectos-->
-<!--<label for="lang">Elige un defecto</label>-->
+        <label style="display: none;"></label>
+        <input type="text" id="nuevo" hidden autofocus onkeydown="if (event.keyCode==13){captura_datosNuevo()}">
+        <button type="button" value="Agregar" hidden id="agregar" onclick="window.location.href = 'elevado.html';">
+            Agregar</button>
+    </div>
+
+    <!--Creación de menú de defectos-->
+    <!--<label for="lang">Elige un defecto</label>-->
 
 
     <div class="contenedor">
         <div class="tarjeta">
             <div id='tarjeta2' class="tarjeta2">
                 <canvas id="Captura" width="1450" height="650">
-                <canvas id="Captura1" width="1450" height="650"></canvas> 
-                <canvas id="Captura2" width="1450" height="168"></canvas> 
-                <canvas id="Captura3" width="1450" height="168"></canvas> 
-                 
+                <canvas id="Captura1" width="168" height="168"></canvas>
+                <canvas id="Captura2" width="168" height="168"></canvas>
+                <canvas id="Captura3" width="168" height="168"></canvas>
+                <canvas id="Captura4" width="168" height="168"></canvas>
+
+
 
                 </canvas><!-- canvas donde se metera la imagen-->
 
@@ -67,12 +70,15 @@
     <!-- CANVAS-->
     <canvas id="CanvasFHD" hidden width="1920" height="1080"></canvas>
     <canvas id="canvasCamara" width="1450" ; height="650"></canvas>
-   
+
+
+
+
     <!-- canvas donde se metera la imagen-->
-   
+
     <div><img id="ialab" src="../img/AI.png" width="195" height="70" onclick="Sequence()"></div>
     <div><img id="sanmina" src="../img/sanmina.png" width="195" height="100"></div>
-    
+
 
 
     <script src="js/main.js"></script>
